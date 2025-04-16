@@ -134,10 +134,24 @@ func AssignMetadataToInstructions(
 			*iter.Ins = iter.Ins.WithSource(lineInfos[0].Line)
 			lineInfos = lineInfos[1:]
 		}
-
+		
 		if len(reloInfos.infos) > 0 && reloInfos.infos[0].offset == iter.Offset {
 			iter.Ins.Metadata.Set(coreRelocationMeta{}, reloInfos.infos[0].relo)
 			reloInfos.infos = reloInfos.infos[1:]
+			GetRelocations(insns)
+		}
+		// GetRelocations(insns)
+	}
+	// GetRelocations(insns)
+
+}
+
+func GetRelocations(insns asm.Instructions) {
+	iter := insns.Iterate()
+	for iter.Next() {
+		relo := CORERelocationMetadata(iter.Ins)
+		if relo != nil && iter.Ins.Source() != nil {
+			fmt.Println("Relocation:", relo, "; Line: ", iter.Ins)
 		}
 	}
 }
